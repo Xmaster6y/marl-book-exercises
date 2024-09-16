@@ -118,4 +118,4 @@ class IQL:
         self.epsilon = epsilon_min + 0.5 *(epsilon_max - epsilon_min) * (1 + np.cos(np.pi * timestep / max_timestep))
         lr_min = 0.01
         lr_max = 0.05
-        self.lr = lr_min + 0.5 *(lr_max - lr_min) * (1 + np.cos(np.pi * timestep / max_timestep))
+        self.learning_rate = lr_min + 0.5 *(lr_max - lr_min) * (1 + np.cos(np.pi * timestep / max_timestep))
