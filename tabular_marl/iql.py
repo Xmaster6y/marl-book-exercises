@@ -47,7 +47,7 @@ class IQL:
             defaultdict(lambda: 0) for _ in range(self.num_agents)
         ]
 
-    def act(self, obss) -> List[int]:
+    def act(self, obss: List[np.ndarray]) -> List[int]:
         """Implement the epsilon-greedy action selection here for stateless task
 
         **IMPLEMENT THIS FUNCTION**
@@ -56,8 +56,19 @@ class IQL:
         :return (List[int]): index of selected action for each agent
         """
         actions = []
-        ### PUT YOUR CODE HERE ###
-        raise NotImplementedError("Need to implement the act() function of IQL")
+        for i, obs in enumerate(obss):
+            if random.random() < self.epsilon:
+                actions.append(random.randint(0, self.n_acts[i] - 1))
+            else:
+                # Get the best action for the agent
+                best_action = None
+                best_q_value = float("-inf")
+                for act in range(self.n_acts[i]):
+                    q_value = self.q_tables[i][str((obs, act))]
+                    if q_value > best_q_value:
+                        best_action = act
+                        best_q_value = q_value
+                actions.append(best_action)
         return actions
 
     def learn(
@@ -79,8 +90,19 @@ class IQL:
         :param done (bool): flag indicating whether a terminal state has been reached
         :return (List[float]): updated Q-values for current actions of each agent
         """
-        ### PUT YOUR CODE HERE ###
-        raise NotImplementedError("Need to implement the learn() function of IQL")
+        for i, (obs, act, reward, n_obs) in enumerate(zip(obss, actions, rewards, n_obss)):
+            # Get the best action for the agent
+            best_q_value = float("-inf")
+            for a in range(self.n_acts[i]):
+                q_value = self.q_tables[i][str((n_obs, a))]
+                if q_value > best_q_value:
+                    best_q_value = q_value
+            # Update the Q-value for the action
+            target = reward + self.gamma * best_q_value
+            self.q_tables[i][str((obs, act))] += self.learning_rate * (
+                target - self.q_tables[i][str((obs, act))]
+            )
+        return [self.q_tables[i][str((obs, act))] for i, (obs, act) in enumerate(zip(obss, actions))]
 
     def schedule_hyperparameters(self, timestep: int, max_timestep: int):
         """Updates the hyperparameters
@@ -91,4 +113,9 @@ class IQL:
         :param timestep (int): current timestep at the beginning of the episode
         :param max_timestep (int): maximum timesteps that the training loop will run for
         """
-        self.epsilon = 1.0 - (min(1.0, timestep / (0.8 * max_timestep))) * 0.99
+        epsilon_min = 0.0
+        epsilon_max = 1
+        self.epsilon = epsilon_min + 0.5 *(epsilon_max - epsilon_min) * (1 + np.cos(np.pi * timestep / max_timestep))
+        lr_min = 0.01
+        lr_max = 0.05
+        self.lr = lr_min + 0.5 *(lr_max - lr_min) * (1 + np.cos(np.pi * timestep / max_timestep))

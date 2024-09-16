@@ -10,17 +10,17 @@ from matrix_game import create_pd_game
 
 
 CONFIG = {
-    "seed": 0,
+    "seed": 1000,
     "gamma": 0.99,
     "total_eps": 20000,
     "ep_length": 1,
-    "eval_freq": 400,
-    "lr": 0.05,
+    "eval_freq": 40,
+    "lr": 0.03,
     "init_epsilon": 0.9,
 }
 
 
-def iql_eval(env, config, q_tables, eval_episodes=500, output=True):
+def iql_eval(env, epsilon, q_tables, eval_episodes=500, output=True):
     """
     Evaluate configuration of independent Q-learning on given environment when initialised with given Q-table
 
@@ -34,9 +34,9 @@ def iql_eval(env, config, q_tables, eval_episodes=500, output=True):
     eval_agents = IQL(
             num_agents=env.n_agents,
             action_spaces=env.action_space,
-            gamma=config["gamma"],
-            learning_rate=config["lr"],
-            epsilon=0.0,
+            gamma=0.0,
+            learning_rate=0.0,
+            epsilon=epsilon,
         )
     eval_agents.q_tables = q_tables
 
@@ -105,7 +105,7 @@ def train(env, config, output=True):
 
         if eps_num > 0 and eps_num % config["eval_freq"] == 0:
             mean_return, std_return = iql_eval(
-                env, config, agents.q_tables, output=output
+                env, agents.epsilon, agents.q_tables, output=output
             )
             evaluation_return_means.append(mean_return)
             evaluation_return_stds.append(std_return)
