@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "gymnasium>=0.29.1",
+    "marlbase",
     "matplotlib>=3.9.2",
     "numpy==1.26.4",
 ]
+
+[tool.uv.sources]
+marlbase = { path = "marl-book-codebase" }
