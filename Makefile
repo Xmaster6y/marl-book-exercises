@@ -39,3 +39,12 @@ exo-2.8:
 .PHONY: exo-2.9
 exo-2.9:
 	cd marl-book-codebase && uv run python -m marlbase.utils.postprocessing.plot_runs --source ../deep_marl_data/rware_tiny_4ag --metric value_loss
+
+.PHONY: exo-2.10
+exo-2.10:
+	cd marl-book-codebase/marlbase && uv run python run.py +algorithm=idqn env.name="lbforaging:Foraging-8x8-2p-3f-v3" env.time_limit=50 algorithm.total_steps=4000000 algorithm.eval_interval=100000 algorithm.log_interval=100000 env.standardise_rewards=True env.wrappers="[CooperativeReward]"
+
+.PHONY: exo-2.11
+exo-2.11:
+	cd marl-book-codebase/marlbase && uv run python run.py +algorithm=idqn env.name="smaclite/2s3z-v0" env.time_limit=150 algorithm.total_steps=1000000 algorithm.eval_interval=1000 algorithm.log_interval=1000 env.standardise_rewards=True
+

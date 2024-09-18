@@ -22,6 +22,7 @@ dependencies = [
     "pyyaml==6.0.2",
     "rware",
     "seaborn==0.13.2",
+    "smaclite",
     "torch==2.4.0",
 ]
 
@@ -29,3 +30,4 @@ dependencies = [
 marlbase = { path = "marl-book-codebase" }
 lbforaging = { git = "https://github.com/uoe-agents/lb-foraging.git" }
 rware = { git = "https://github.com/uoe-agents/robotic-warehouse.git" }
+smaclite = { git = "https://github.com/uoe-agents/smaclite.git" }
